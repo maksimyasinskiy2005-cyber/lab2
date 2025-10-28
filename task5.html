@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Лабораторна 2, Завдання 5: Розширені методи console</title>
+</head>
+<body>
+
+<h1>Лабораторна 2, Завдання 5: Розширені методи console</h1>
+<p>Відкрийте консоль браузера (F12), щоб побачити різні типи виводу та результати профілювання.</p>
+
+<div id="targetElement">
+    <p class="data-p">Дані для дослідження DOM</p>
+    <ul>
+        <li>Елемент 1</li>
+        <li>Елемент 2</li>
+    </ul>
+</div>
+
+<script>
+console.log("%c--- ПОЧАТОК ВИКОНАННЯ ЗАВДАННЯ 5 ---", "color: cyan; font-weight: bold; text-shadow: 0 0 5px #0ff;");
+
+const testObject = {
+    id: 101,
+    name: "Test User",
+    active: true,
+    details: { role: "Dev", access: ["read", "write"] }
+};
+const testCondition = (5 > 10);
+const targetElement = document.getElementById('targetElement');
+
+// ------------------------------------------------------------------
+// 1. Різні типи повідомлень
+// ------------------------------------------------------------------
+console.log("%c--- 1. Різні типи повідомлень ---", "color: yellow; font-weight: bold;");
+console.info("%cINFO: Це інформаційне повідомлення.", "color: lightblue;");
+console.warn("%cWARN: Це важливе попередження.", "color: orange; font-weight: bold;");
+console.error("%cERROR: Виникла критична помилка!", "color: red; font-weight: bold;");
+
+// ------------------------------------------------------------------
+// 2. console.dir() та console.dirxml()
+// ------------------------------------------------------------------
+console.log("%c--- 2. Відображення об'єктів ---", "color: lime; font-weight: bold;");
+console.log("%cconsole.dir(testObject):", "color: cyan;");
+console.dir(testObject);
+
+console.log("%cconsole.dirxml(targetElement):", "color: cyan;");
+console.dirxml(targetElement);
+
+// ------------------------------------------------------------------
+// 3. console.time() та console.timeEnd()
+// ------------------------------------------------------------------
+console.log("%c--- 3. Вимірювання часу виконання ---", "color: magenta; font-weight: bold;");
+const timerLabel = "DataProcessingLoop";
+console.time(timerLabel);
+
+for (let i = 0; i < 100000; i++) {
+    let temp = Math.sqrt(i);
+}
+
+console.timeEnd(timerLabel);
+
+// ------------------------------------------------------------------
+// 4. console.profile() та console.profileEnd()
+// ------------------------------------------------------------------
+console.log("%c--- 4. Профілювання CPU ---", "color: pink; font-weight: bold;");
+const profileLabel = "FunctionExecutionTime";
+console.profile(profileLabel);
+
+function heavyCalculation() {
+    let result = 0;
+    for (let k = 0; k < 5000; k++) {
+        result += Math.pow(Math.sin(k), 2);
+    }
+    return result;
+}
+
+heavyCalculation();
+console.profileEnd(profileLabel);
+console.log("%cПрофільування завершено. Перевірте вкладку 'Performance' або 'Profiler'.", "color: cyan;");
+
+// ------------------------------------------------------------------
+// 5. console.assert()
+// ------------------------------------------------------------------
+console.log("%c--- 5. Умовний вивід (Assertion) ---", "color: orange; font-weight: bold;");
+console.assert(testCondition, "%cASSERTION FAILED: 5 > 10 є хибною.", "color: red; font-weight: bold;");
+console.assert(10 > 5, "%cЦе повідомлення не з'явиться, бо умова істинна.", "color: green; font-weight: bold;");
+
+console.log("%c--- КІНЕЦЬ ВИКОНАННЯ ЗАВДАННЯ 5 ---", "color: cyan; font-weight: bold; text-shadow: 0 0 5px #0ff;");
+</script>
+
+</body>
+</html>
