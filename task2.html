@@ -1,94 +1,154 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <title>JavaScript Годинник у форматі year#moun#day-hour#min#sec</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            padding-top: 50px;
-            background-color: #0d0d2b; /* Темний фон для неону */
-            color: #00f; /* Основний неоновий синій текст */
-        }
+<meta charset="UTF-8">
+<title>Практична робота — Калькулятор (ПНУ)</title>
 
-        .container {
-            background-color: rgba(0,0,50,0.5);
-            padding: 40px 60px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px #00f, 0 0 40px #0ff;
-            display: inline-block;
-        }
+<style>
+  /* === ЗАГАЛЬНИЙ СТИЛЬ === */
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f0f10, #1b1b3a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+  }
 
-        h1 {
-            font-size: 2.5em;
-            text-shadow: 0 0 10px #00f, 0 0 20px #0ff;
-            margin-bottom: 20px;
-        }
+  .calculator {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+  }
 
-        label {
-            font-size: 1.2em;
-            display: block;
-            margin-bottom: 15px;
-            text-shadow: 0 0 5px #00f;
-        }
+  .calculator h1 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #ffb400;
+    letter-spacing: 1px;
+  }
 
-        input[type="text"] {
-            font-size: 1.8em;
-            text-align: center;
-            border: 2px solid #00f;
-            padding: 15px 20px;
-            width: 400px;
-            border-radius: 10px;
-            background-color: rgba(0,0,50,0.3);
-            color: #0ff;
-            box-shadow: 0 0 15px #00f, 0 0 30px #0ff;
-        }
+  input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.6em;
+    border: none;
+    border-radius: 10px;
+    text-align: right;
+    background: rgba(255, 255, 255, 0.9);
+    color: #111;
+    margin-bottom: 20px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  }
 
-        input[type="text"]:focus {
-            outline: none;
-            box-shadow: 0 0 25px #0ff, 0 0 50px #0ff;
-        }
-    </style>
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 70px);
+    gap: 10px;
+    justify-content: center;
+  }
+
+  button {
+    padding: 20px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 10px;
+    background: #262646;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  button:hover {
+    background: #ffb400;
+    color: #000;
+    transform: scale(1.05);
+  }
+
+  .equal {
+    background: #00e6f6;
+    color: #000;
+  }
+
+  .clear {
+    background: #ff005a;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #aaa;
+  }
+</style>
 </head>
-<body onload="clock()">
 
-    <div class="container">
-        <h1>Динамічний Годинник</h1>
-        <form name="clock_form">
-            <label for="display">Поточна дата та час у форматі: <br>year#moun#day-hour#min#sec</label>
-            <input type="text" name="display" id="display" value="" readonly>
-        </form>
+<body>
+
+  <div class="calculator">
+    <h1>🧮 Калькулятор</h1>
+    <input type="text" id="display" readonly>
+
+    <div class="buttons">
+      <!-- Ряд 1 -->
+      <button onclick="clearDisplay()" class="clear">C</button>
+      <button onclick="appendSymbol('(')">(</button>
+      <button onclick="appendSymbol(')')">)</button>
+      <button onclick="appendSymbol('/')">÷</button>
+
+      <!-- Ряд 2 -->
+      <button onclick="appendSymbol('7')">7</button>
+      <button onclick="appendSymbol('8')">8</button>
+      <button onclick="appendSymbol('9')">9</button>
+      <button onclick="appendSymbol('*')">×</button>
+
+      <!-- Ряд 3 -->
+      <button onclick="appendSymbol('4')">4</button>
+      <button onclick="appendSymbol('5')">5</button>
+      <button onclick="appendSymbol('6')">6</button>
+      <button onclick="appendSymbol('-')">−</button>
+
+      <!-- Ряд 4 -->
+      <button onclick="appendSymbol('1')">1</button>
+      <button onclick="appendSymbol('2')">2</button>
+      <button onclick="appendSymbol('3')">3</button>
+      <button onclick="appendSymbol('+')">+</button>
+
+      <!-- Ряд 5 -->
+      <button onclick="appendSymbol('0')">0</button>
+      <button onclick="appendSymbol('.')">.</button>
+      <button onclick="calculate()" class="equal">=</button>
     </div>
 
-    <script>
-        function addLeadingZero(num) {
-            return (num < 10 ? "0" : "") + num;
-        }
+    <footer>
+      Практична робота — Студент ПНУ
+    </footer>
+  </div>
 
-        function clock() {
-            let now = new Date();
+  <script>
+    const display = document.getElementById('display');
 
-            let year = now.getFullYear();
-            let month = now.getMonth() + 1;
-            let day = now.getDate();
+    // Додає символ у поле вводу
+    function appendSymbol(symbol) {
+      display.value += symbol;
+    }
 
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            let seconds = now.getSeconds();
+    // Очищає поле
+    function clearDisplay() {
+      display.value = '';
+    }
 
-            let formattedTimeDate = 
-                year + "#" + 
-                addLeadingZero(month) + "#" + 
-                addLeadingZero(day) + "-" + 
-                addLeadingZero(hours) + "#" + 
-                addLeadingZero(minutes) + "#" + 
-                addLeadingZero(seconds);
-
-            document.clock_form.display.value = formattedTimeDate;
-
-            setTimeout(clock, 1000);
-        }
-    </script>
+    // Обчислює вираз за допомогою eval()
+    function calculate() {
+      try {
+        display.value = eval(display.value);
+      } catch (error) {
+        display.value = 'Помилка';
+      }
+    }
+  </script>
 </body>
 </html>
